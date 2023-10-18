@@ -1,6 +1,6 @@
 #include "main.h"
 /*
- * _printf - printf function that produces output according to a format
+ * _printf - function that produces output according to a format
  * @format: format string with a variable number of placeholders.
  *
  * Return: the number of characters printed.
