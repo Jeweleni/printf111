@@ -1,108 +1,14 @@
 #include "main.h"
 
-/*
- * _printf - function that produces output according to a format
- * @format: format string with a variable number of placeholders.
- *
- * Return: the number of characters printed.
- * (excluding the null byte used to end output to strings)
- */
-
-int _printf(const char *format, ...)
-{
-	int num_of_char_printed = 0;
-	va_list arg_list;
-
-	if (format == NULL)
-	{
-		return (-1);
-	}
-
-	va_start(arg_list, format);
-
-	while (*format)
-	{
-		if (*format != '%')
-		{
-			write(1, format, 1);
-			num_of_char_printed++;
-		}
-		else
-		{
-			format++;
-			if (*format == '\0')
-				break;
-
-			if (*format == 'c')
-			{
-				char c = va_arg(arg_list, int);
-
-				write(1, &c, 1);
-				num_of_char_printed++;
-			}
-			else if (*format == '%')
-			{
-				write(1, format, 1);
-				num_of_char_printed++;
-			}
-			else if (*format == 's')
-			{
-				char *str = va_arg(arg_list, char *);
-				int len_of_str = 0;
-
-				while (str[len_of_str] != '\0')
-					len_of_str++;
-
-				write(1, str, len_of_str);
-				num_of_char_printed = num_of_char_printed + len_of_str;
-			}
-		}
-		format++;
-	}
-	va_end(arg_list);
-	return (num_of_char_printed);
-
 void print_buffer(char buffer[], int *buff_ind);
 
-
 /**
- * _printf - prints formatted string
- * @format: formatted string to print
- *
- * Return: string length
+ * _printf - Printf function
+ * @format: format.
+ * Return: Printed chars.
  */
 int _printf(const char *format, ...)
 {
-
-	va_list ptr;
-	int size = 0;
-
-	Choice choice[] = {{"c", char_func}, {"s", str_func}, {"d", digit_func},
-	{"i", digit_func}, {"%", percent_func},
-	{"b", binary_func}, {"u", unsig_int_func},
-	{"X", hex_upper_func}, {"x", hex_lower_func},
-	{"o", octal_func}, {"S", stringupperCase_func},
-	{"r", rev_func}, {"R", rot13_func}, {"p", ptr_func},
-	{"+i", plus_dig_func}, {"+d", plus_dig_func},
-	{"+p", plus_ptr_func}, {"+b", binary_func},
-	{"+x", hex_lower_func}, {"+X", hex_upper_func},
-	{"+s", str_func}, {"+c", char_func}, {" i", space_func_num},
-	{" d", space_func_num},
-	{" p", space_func_ptr}, {" b", binary_func},
-	{" x", hex_lower_func},
-	{" X", hex_upper_func}, {" s", str_func},
-	{" c", char_func},
-	{"#o", mod_octal_func},
-	{"#x", mod_hex_func}, {NULL, NULL}};
-
-	va_start(ptr, format);
-
-	size = sizeof(choice) / sizeof(Choice);
-
-	size = get_function(format, ptr, choice, size);
-
-	return (size);
-
 	int j, printed = 0, printed_chars = 0;
 	int flags, width, precision, size, buff_ind = 0;
 	va_list list;
@@ -157,5 +63,4 @@ void print_buffer(char buffer[], int *buff_ind)
 		write(1, &buffer[0], *buff_ind);
 
 	*buff_ind = 0;
-
 }
