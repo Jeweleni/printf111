@@ -1,66 +1,39 @@
 #include "main.h"
 
-void print_buffer(char buffer[], int *buff_ind);
-
 /**
- * _printf - Printf function
- * @format: format.
- * Return: Printed chars.
+ * _printf - prints formatted string
+ * @format: formatted string to print
+ *
+ * Return: string length
  */
 int _printf(const char *format, ...)
 {
-	int j, printed = 0, printed_chars = 0;
-	int flags, width, precision, size, buff_ind = 0;
-	va_list list;
-	char buffer[BUFF_SIZE];
+	va_list ptr;
+	int size = 0;
 
-	if (format == NULL)
-		return (-1);
+	Choice choice[] = {{"c", char_func}, {"s", str_func}, {"d", digit_func},
+	{"i", digit_func}, {"%", percent_func},
+	{"b", binary_func}, {"u", unsig_int_func},
+	{"X", hex_upper_func}, {"x", hex_lower_func},
+	{"o", octal_func}, {"S", stringupperCase_func},
+	{"r", rev_func}, {"R", rot13_func}, {"p", ptr_func},
+	{"+i", plus_dig_func}, {"+d", plus_dig_func},
+	{"+p", plus_ptr_func}, {"+b", binary_func},
+	{"+x", hex_lower_func}, {"+X", hex_upper_func},
+	{"+s", str_func}, {"+c", char_func}, {" i", space_func_num},
+	{" d", space_func_num},
+	{" p", space_func_ptr}, {" b", binary_func},
+	{" x", hex_lower_func},
+	{" X", hex_upper_func}, {" s", str_func},
+	{" c", char_func},
+	{"#o", mod_octal_func},
+	{"#x", mod_hex_func}, {NULL, NULL}};
 
-	va_start(list, format);
+	va_start(ptr, format);
 
-	for (j = 0; format && format[j] != '\0'; j++)
-	{
-		if (format[j] != '%')
-		{
-			buffer[buff_ind++] = format[j];
-			if (buff_ind == BUFF_SIZE)
-				print_buffer(buffer, &buff_ind);
-			/* write(1, &format[i], 1);*/
-			printed_chars++;
-		}
-		else
-		{
-			print_buffer(buffer, &buff_ind);
-			flags = get_flags(format, &j);
-			width = get_width(format, &j, list);
-			precision = get_precision(format, &j, list);
-			size = get_size(format, &j);
-			++j;
-			printed = handle_print(format, &j, list, buffer,
-				flags, width, precision, size);
-			if (printed == -1)
-				return (-1);
-			printed_chars += printed;
-		}
-	}
+	size = sizeof(choice) / sizeof(Choice);
 
-	print_buffer(buffer, &buff_ind);
+	size = get_function(format, ptr, choice, size);
 
-	va_end(list);
-
-	return (printed_chars);
-}
-
-/**
- * print_buffer - Prints the contents of the buffer if it exist
- * @buffer: Array of chars
- * @buff_ind: Index at which to add next char, represents the length.
- */
-void print_buffer(char buffer[], int *buff_ind)
-{
-	if (*buff_ind > 0)
-		write(1, &buffer[0], *buff_ind);
-
-	*buff_ind = 0;
+	return (size);
 }
